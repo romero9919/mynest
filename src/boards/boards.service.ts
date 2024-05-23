@@ -12,6 +12,11 @@ export class BoardsService {
     constructor(
         private boardRepository: BoardRepository,
     ){}
+
+    async getAllBoards(): Promise <Board[]>{
+        return this.boardRepository.find();
+    }
+
     // getAllBoards(): Board[]{
     //     return this.boards;
     // }
@@ -66,6 +71,10 @@ export class BoardsService {
     async deleteBoard(id: number): Promise<void>{
         const result = await this.boardRepository.delete(id);
 
+        if(result.affected === 0){
+            throw new NotFoundException(`Can't find Board with id ${id}`);
+        }
+
         console.log(result);
     }
 
@@ -73,6 +82,15 @@ export class BoardsService {
     //     const found = this.getBoardById(id);
     //     this.boards = this.boards.filter((board) => board.id !== found.id);
     // }
+
+    async updateBoardStatus(id: number, status: BoardStatus): Promise<Board>{
+        const board = await this.getBoardById(id);
+
+        board.status = status;
+        await this.boardRepository.save(board);
+
+        return board;
+    }
 
     // updateBoardStatus(id: string, status: BoardStatus): Board{
     //     const board = this.getBoardById(id);

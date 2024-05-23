@@ -9,6 +9,11 @@ import { Board } from './board.entity';
 export class BoardsController {
     constructor(private boardsService: BoardsService){}
     
+    @Get('/')
+    getAllBoard(): Promise<Board[]>{
+        return this.boardsService.getAllBoards();
+    }
+
     // @Get('/')
     // getAllBoard(): Board[]{
     //     return this.boardsService.getAllBoards();
@@ -47,6 +52,14 @@ export class BoardsController {
     // deleteBoard(@Param('id') id: string): void{
     //     this.boardsService.deleteBoard(id);
     // }
+
+    @Patch('/:id/status')
+    updateBoardStatus(
+        @Param('id', ParseIntPipe) id: number,
+        @Body('status', BoardStatusValidationPipe) status: BoardStatus,
+    ) {
+        return this.boardsService.updateBoardStatus(id, status);
+    }
 
     // @Patch('/:id/status')
     // updateBoardStatus(
